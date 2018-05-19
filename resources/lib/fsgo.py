@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 A Kodi-agnostic library for FOX Sports GO
 """
@@ -9,6 +9,7 @@ import cookielib
 import time
 import calendar
 import uuid
+import xbmc
 from urllib import urlencode
 from datetime import datetime, timedelta
 
@@ -300,10 +301,12 @@ class fsgolib(object):
                 errors.append(error)
             errors = ', '.join(errors)
             self.log('Failed to get stream URL. Error(s): %s' % errors)
+        elif xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)'):
+            #Stream URL when Inputstream Adaptive is enabled
+            stream_url = stream_dict['stream']['location']
         else:
             stream_url['manifest'] = stream_dict['stream']['location']
             stream_url['bitrates'] = self.parse_m3u8_manifest(stream_url['manifest'])
-
         return stream_url
 
     def parse_m3u8_manifest(self, manifest_url):
