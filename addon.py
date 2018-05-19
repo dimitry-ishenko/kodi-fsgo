@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 A Kodi plugin for FOX Sports GO
 """
@@ -42,20 +42,26 @@ def addon_log(string):
 
 
 def play(channel_id, airing_id=None):
+    auth_header = fsgo.get_credentials()['auth_header']
     stream_url = fsgo.get_stream_url(channel_id, airing_id)
-    headers = {
-        'Accept': 'application/vnd.media-service+json; version=1',
-            'Authorization': fsgo.get_credentials()['auth_header']
-    }
-    if stream_url:
+    headers = '|User-Agent='
+    headers += 'Adobe Primetime/1.4 Dalvik/2.1.0 (Linux; U; Android 6.0.1 Build/MOB31H)'
+    headers += '&Cookie=Authorization=' + str(auth_header)
+    if xbmc.getCondVisibility('System.HasAddon(inputstream.adaptive)'):#Check for Inputstream Adaptive is enabled
+        playitem = xbmcgui.ListItem()
+        playitem.setMimeType("audio/mpegurl")
+        playitem.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        playitem.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        playitem.setProperty('inputstream.adaptive.stream_headers', headers)
+        playitem.setProperty('inputstream.adaptive.license_key', headers)
+        playitem.setProperty('IsPlayable', 'true')
+        playitem.setPath(stream_url)
+        xbmcplugin.setResolvedUrl(_handle, True, listitem=playitem)
+    elif stream_url:
         bitrate = select_bitrate(stream_url['bitrates'].keys())
         if bitrate:
             play_url = stream_url['bitrates'][bitrate]
             playitem = xbmcgui.ListItem(path=play_url)
-            playitem.setProperty('inputstreamaddon', 'inputstream.adaptive')
-            playitem.setProperty('inputstream.adaptive.manifest_type', 'hls')
-            playitem.setProperty('inputstream.adaptive.stream_headers', headers)
-            playitem.setProperty('inputstream.adaptive.license_key', headers)
             playitem.setProperty('IsPlayable', 'true')
             xbmcplugin.setResolvedUrl(_handle, True, listitem=playitem)
     else:
