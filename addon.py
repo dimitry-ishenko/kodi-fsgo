@@ -43,11 +43,19 @@ def addon_log(string):
 
 def play(channel_id, airing_id=None):
     stream_url = fsgo.get_stream_url(channel_id, airing_id)
+    headers = {
+        'Accept': 'application/vnd.media-service+json; version=1',
+            'Authorization': fsgo.get_credentials()['auth_header']
+    }
     if stream_url:
         bitrate = select_bitrate(stream_url['bitrates'].keys())
         if bitrate:
             play_url = stream_url['bitrates'][bitrate]
             playitem = xbmcgui.ListItem(path=play_url)
+            playitem.setProperty('inputstreamaddon', 'inputstream.adaptive')
+            playitem.setProperty('inputstream.adaptive.manifest_type', 'hls')
+            playitem.setProperty('inputstream.adaptive.stream_headers', headers)
+            playitem.setProperty('inputstream.adaptive.license_key', headers)
             playitem.setProperty('IsPlayable', 'true')
             xbmcplugin.setResolvedUrl(_handle, True, listitem=playitem)
     else:
