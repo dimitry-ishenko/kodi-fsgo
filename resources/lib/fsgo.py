@@ -284,7 +284,7 @@ class fsgolib(object):
     def get_stream_url(self, channel_id, airing_id=None):
         """Return the stream URL for an event."""
         stream_url = {}
-        url = self.base_url + '/platform/ios-tablet~3.1.1/channel/%s' % channel_id
+        url = self.base_url + '/platform/web_complete_noads/channel/%s' % channel_id
         if airing_id:
             url = url + '/airing/%s' % airing_id
 
@@ -336,6 +336,9 @@ class fsgolib(object):
             payload = None
         elif schedule_type == 'featured':
             url = self.base_url + '/epg/ws/featured/all/offset/0/size/%s' % size
+            payload = None
+        elif schedule_type == 'replays':
+            url = self.base_url + '/epg/ws/replay/all?size=%s' % size
             payload = None
         elif schedule_type == 'search':
             url = self.base_url + '/epg/ws/search/offset/0/size/%s' % size
