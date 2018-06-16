@@ -70,7 +70,7 @@ def play(channel_id, airing_id=None):
 
 def main_menu():
     addon_log('Hello World!')  # print add-on version
-    items = [language(30023), language(30015), language(30026), language(30036), language(30030)]
+    items = [language(30023), language(30015), language(30026), language(30036), language(30042), language(30030)]
     for item in items:
         if item == language(30023):
             params = {
@@ -84,6 +84,11 @@ def main_menu():
             params = {
                 'action': 'list_events',
                 'schedule_type': 'featured'
+            }
+        elif item == language(30042):
+            params = {
+                'action': 'list_events',
+                'schedule_type': 'replays'
             }
         elif item == language(30036):
             params = {'action': 'search'}
@@ -146,6 +151,14 @@ def list_events(schedule_type, filter_date=False, search_query=None, search_filt
             }
             playable = True
             date_color = 'live'
+        elif airing_date_obj < now:
+            params = {
+                'action': 'play_event',
+                'channel_id': channel_id,
+                'airing_id': airing_id
+            }
+            playable = True
+            date_color = 'replay'
         else:
             message = '%s [B]%s[/B].' % (language(30024), start_time)
             params = {

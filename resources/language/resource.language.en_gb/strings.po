@@ -1,4 +1,4 @@
-﻿# Kodi FOX Sports GO language file
+# Kodi FOX Sports GO language file
 msgid ""
 msgstr ""
 "Project-Id-Version: kodi-fsgo\n"
@@ -177,3 +177,6 @@ msgctxt "#30041"
 msgid "Show events only"
 msgstr ""
 
+msgctxt "#30042"
+msgid "Replays"
+msgstr ""
